@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--
+    connect-src 'none' means this page cannot make ANY network request:
+    the sample never leaves your browser. No inline script/style allowed,
+    so strings from a malicious file cannot execute even if escaping failed.
+  -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>DeobStrings — obfuscation-aware strings for suspicious binaries</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">⟨/⟩</span>
+      <div>
+        <h1>DeobStrings</h1>
+        <p class="tag">Like <code>strings</code>, but it notices obfuscation and tries to undo it.</p>
+      </div>
+    </div>
+    <div class="privacy">🔒 100% client-side · no uploads · no network</div>
+  </header>
+
+  <main>
+    <section id="drop" class="drop" tabindex="0" aria-label="Drop a file to analyze">
+      <input type="file" id="file" hidden>
+      <div class="drop-inner">
+        <div class="drop-icon">⇩</div>
+        <p><strong>Drop a file here</strong> or <button type="button" id="pick" class="linkish">browse</button></p>
+        <p class="muted">PE executables get full header analysis. Any other file still gets strings, IOCs and decoding. Max 64 MB.</p>
+        <p class="warn">The file is only read as bytes, never executed. Still: handle live malware inside an analysis VM.</p>
+      </div>
+    </section>
+
+    <section id="status" class="status hidden" aria-live="polite"></section>
+
+    <section id="report" class="hidden">
+      <div class="report-head">
+        <div>
+          <h2 id="r-name"></h2>
+          <div id="r-meta" class="muted"></div>
+        </div>
+        <div class="actions">
+          <button type="button" id="copy-iocs">Copy IOCs (defanged)</button>
+          <button type="button" id="export">Export JSON</button>
+          <button type="button" id="reset" class="secondary">Analyze another</button>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card verdict" id="verdict-card">
+          <div class="label">Obfuscation score</div>
+          <div class="big" id="r-score"></div>
+          <div id="r-verdict"></div>
+          <div class="meter"><div id="r-meter"></div></div>
+        </div>
+        <div class="card"><div class="label">Hashes</div><div id="r-hashes" class="mono small"></div></div>
+        <div class="card"><div class="label">File</div><div id="r-file" class="small"></div></div>
+      </div>
+
+      <details open><summary>Obfuscation findings <span class="count" id="c-findings"></span></summary>
+        <div id="findings"></div></details>
+
+      <details open><summary>Entropy map</summary>
+        <div class="chart-wrap">
+          <canvas id="chart" height="180"></canvas>
+          <div id="chart-tip" class="tip hidden"></div>
+        </div>
+        <div class="legend"><span class="sw lo"></span>&lt; 6 plain/code <span class="sw mid"></span>6–7.2 dense <span class="sw hi"></span>&gt; 7.2 compressed / encrypted</div>
+      </details>
+
+      <details open><summary>IOCs <span class="count" id="c-iocs"></span></summary>
+        <label class="inline"><input type="checkbox" id="show-benign"> show likely-benign (cert/manifest domains, private IPs)</label>
+        <div id="iocs"></div></details>
+
+      <details open><summary>Decoded strings <span class="count" id="c-decoded"></span></summary>
+        <p class="muted small">Strings that do not exist in plaintext but were recovered by peeling base64/hex, XOR brute force, ROT13 or reversal. The chain shows how each one was recovered.</p>
+        <div id="decoded"></div></details>
+
+      <details id="pe-sec"><summary>Sections</summary><div id="sections"></div></details>
+      <details id="pe-imp"><summary>Imports <span class="count" id="c-imports"></span></summary><div id="imports"></div></details>
+
+      <details><summary>All strings <span class="count" id="c-strings"></span></summary>
+        <div class="filters">
+          <input type="search" id="s-filter" placeholder="Filter (regex)">
+          <select id="s-enc"><option value="">all encodings</option><option value="ascii">ascii</option><option value="utf16le">utf-16le</option></select>
+          <label class="inline">min len <input type="number" id="s-min" value="6" min="4" max="200"></label>
+        </div>
+        <div id="strings" class="mono small"></div>
+      </details>
+    </section>
+  </main>
+
+  <footer class="muted small">
+    v1 · static analysis only: packed binaries, runtime-decrypted strings and stack strings may still hide things.
+    <a href="https://github.com/spencer-silva/obfustring" rel="noopener noreferrer" id="gh">Source on GitHub</a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
