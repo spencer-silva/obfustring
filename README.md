@@ -1,4 +1,4 @@
-# DeobStrings
+# Obfustring
 
 **`strings`, but it notices obfuscation and tries to undo it.** Drop a suspicious file into the page and you get an obfuscation score, an entropy map, PE header analysis, extracted IOCs, and strings recovered from base64, hex, XOR, ROT13 and reversed encodings, each shown with the decode chain that produced it.
 
@@ -6,7 +6,7 @@ Everything runs in your browser. The page's Content-Security-Policy sets `connec
 
 ## Why
 
-`strings` only finds text that sits in the file in plaintext. Malware authors know this, so C2 URLs, commands and API names get encoded. A near-empty `strings` output is itself a signal, though, and many encodings are cheap to reverse. DeobStrings does both: it scores *how* obfuscated a file looks, then tries to peel the easy layers.
+`strings` only finds text that sits in the file in plaintext. Malware authors know this, so C2 URLs, commands and API names get encoded. A near-empty `strings` output is itself a signal, though, and many encodings are cheap to reverse. Obfustring does both: it scores *how* obfuscated a file looks, then tries to peel the easy layers.
 
 ## What v1 does
 

@@ -1,5 +1,5 @@
 /*
- * DeobStrings analyzer — v1
+ * Obfustring analyzer — v1
  *
  * Runs inside a Web Worker (or in Node for tests). It never touches the DOM
  * and never executes or emulates the sample: everything here is static

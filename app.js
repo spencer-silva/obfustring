@@ -1,5 +1,5 @@
 /*
- * DeobStrings UI. Security rule for this file: every value that came from the
+ * Obfustring UI. Security rule for this file: every value that came from the
  * sample is rendered with textContent (via el()). Never use innerHTML.
  */
 'use strict';
@@ -294,7 +294,7 @@ for (const id of ['s-filter', 's-enc', 's-min']) $(id).addEventListener('input',
 $('export').addEventListener('click', () => {
   if (!lastResult) return;
   const blob = new Blob([JSON.stringify(lastResult, null, 2)], { type: 'application/json' });
-  const a = el('a', { href: URL.createObjectURL(blob), download: (lastResult.file.sha256 || 'report').slice(0, 16) + '.deobstrings.json' });
+  const a = el('a', { href: URL.createObjectURL(blob), download: (lastResult.file.sha256 || 'report').slice(0, 16) + '.obfustring.json' });
   document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 });
